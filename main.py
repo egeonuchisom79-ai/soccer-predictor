@@ -116,27 +116,4 @@ def get_team_stats(team_id, num_matches=10):
     avg_conceded = goals_conceded / len(matches) if matches else 1.0
     return avg_scored, avg_conceded
 
-@app.get("/matches")
-def get_matches(competition: str = "PL"):
-    url = f"{BASE_URL}/competitions/{competition}/matches?status=SCHEDULED"
-    response = requests.get(url, headers=headers).json()
-    matches = response.get("matches", [])
-    results = []
-    
-    for match in matches:
-        home_id = match["homeTeam"]["id"]
-        away_id = match["awayTeam"]["id"]
-        home_name = match["homeTeam"]["name"]
-        away_name = match["awayTeam"]["name"]
-        
-        home_avg, home_conceded = get_team_stats(home_id)
-        away_avg, away_conceded = get_team_stats(away_id)
-        
-        home_expected = (home_avg + away_conceded) / 2
-        away_expected = (away_avg + home_conceded) / 2
-        
-        prob = match_probability_under_45(home_expected, away_expected)
-        results.append({"match": f"{home_name} vs {away_name}", "probability": round(prob * 100, 2)})
-    
-    results.sort(key=lambda x: x["probability"], reverse=True)
-    return {"competition": competition, "results": results}
+
