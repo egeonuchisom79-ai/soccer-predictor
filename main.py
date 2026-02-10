@@ -15,6 +15,8 @@ from fastapi import FastAPI
 app = FastAPI()
 
 @app.get("/check-key")
+@app.get("/matches")
+def matches():
 def check_key():
     return {"API_KEY": os.getenv("API_KEY")}
 
