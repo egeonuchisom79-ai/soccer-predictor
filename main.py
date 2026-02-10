@@ -18,6 +18,24 @@ app = FastAPI()
 def check_key():
     return {"API_KEY": os.getenv("API_KEY")}
 
+from fastapi import FastAPI
+import os, requests
+
+app = FastAPI()
+
+@app.get("/check-key")
+def check_key():
+    return {"API_KEY": os.getenv("API_KEY")}
+
+@app.get("/matches")
+def matches():
+    api_key = os.getenv("API_KEY")
+    headers = {"X-Auth-Token": api_key}
+    # Ask for scheduled (upcoming) and live (present) matches
+    url = "https://api.football-data.org/v4/competitions/PL/matches?status=SCHEDULED,LIVE"
+    response = requests.get(url, headers=headers)
+    return {"competition": "PL", "results": response.json().get("matches", [])}
+
 def poisson_probability(lmbda, k):
     return (lmbda**k * math.exp(-lmbda)) / math.factorial(k)
 
