@@ -9,6 +9,14 @@ BASE_URL = "https://api.football-data.org/v4"
 headers = {"X-Auth-Token": API_KEY}
 
 app = FastAPI()
+import os
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/check-key")
+def check_key():
+    return {"API_KEY": os.getenv("API_KEY")}
 
 def poisson_probability(lmbda, k):
     return (lmbda**k * math.exp(-lmbda)) / math.factorial(k)
