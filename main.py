@@ -67,34 +67,7 @@ import pytz
 
 app = FastAPI()
 
-@app.get("/matches")
-def matches():
-    api_key = os.getenv("API_KEY")
-    headers = {"X-Auth-Token": api_key}
-    url = "https://api.football-data.org/v4/competitions/PL/matches?status=SCHEDULED,FINISHED"
-    response = requests.get(url, headers=headers)
-    matches = response.json().get("matches", [])
 
-    # Nigeria timezone
-    nigeria_tz = pytz.timezone("Africa/Lagos")
-
-    simplified = []
-    for m in matches:
-        # Convert UTC date to Nigeria local time
-        utc_dt = datetime.fromisoformat(m["utcDate"].replace("Z", "+00:00"))
-        local_dt = utc_dt.astimezone(nigeria_tz)
-
-        simplified.append({
-            "matchday": m["matchday"],
-            "kickoff_local": local_dt.strftime("%Y-%m-%d %H:%M"),
-            "status": m["status"],
-            "homeTeam": m["homeTeam"]["name"],
-            "awayTeam": m["awayTeam"]["name"],
-            "score": m["score"]["fullTime"]
-        })
-
-    return {"competition": "PL", "results": simplified}("/matches")
-def matches():
 def check_key():
     return {"API_KEY": os.getenv("API_KEY")}
 
